@@ -21,7 +21,7 @@ const App = () => {
         : 'Aqui se crearian los arboles de configuracion'}
       <hr />
       {showAgent ? <Agent /> : <Admin />} */}
-      <Agent />
+      <Admin />
     </StrictMode>
   );
 };

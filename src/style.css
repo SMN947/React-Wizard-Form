@@ -12,7 +12,7 @@ p {
 }
 
 pre.mid {
-  height: 250px;
+  height: 75vh;
   overflow: scroll;
 }
 

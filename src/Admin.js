@@ -39,9 +39,9 @@ const Admin = () => {
   };
   return (
     <>
-      <div>
-        <pre className="mid">{JSON.stringify(shapes, null, 1)}</pre>
-        <pre className="mid">{JSON.stringify(flowchart, null, 1)}</pre>
+      <div className="mid">
+        <h2>asd</h2>
+        <hr />
         <button
           onClick={() => {
             addShape();
@@ -49,41 +49,46 @@ const Admin = () => {
         >
           Añadir
         </button>
+        <hr />
+        <pre className="mid">{JSON.stringify(shapes, null, 1)}</pre>
+        <pre className="mid">{JSON.stringify(flowchart, null, 1)}</pre>
       </div>
-      <hr />
-      <Stage
-        ref={stageRef}
-        width={window.innerWidth}
-        height={window.innerHeight}
-      >
-        <Layer>
-          {shapes.map((shape, i) => (
-            <DynamicRect
-              key={shape.id}
-              shape={shape}
-              id={i}
-              onUpdate={(newShape) => updateShape(i, newShape)}
-            />
-          ))}
-          {shapes.map((shape, i) => {
-            if (shapes[i + 1]) {
-              return (
-                <Line
-                  key={i}
-                  points={[
-                    shape.x + shape.width,
-                    shape.y + shape.height / 2,
-                    shapes[i + 1].x,
-                    shapes[i + 1].y + shapes[i + 1].height / 2,
-                  ]}
-                  stroke="#000000"
-                />
-              );
-            }
-            return null;
-          })}
-        </Layer>
-      </Stage>
+      <div className="mid">
+        <Stage
+          ref={stageRef}
+          width={window.innerWidth}
+          height={window.innerHeight}
+        >
+          <Layer>
+            {shapes.map((shape, i) => (
+              <DynamicRect
+                key={shape.id}
+                shape={shape}
+                id={i}
+                onUpdate={(newShape) => updateShape(i, newShape)}
+              />
+            ))}
+            {shapes.map((shape, i) => {
+              if (shapes[i + 1]) {
+                return (
+                  <Line
+                    key={i}
+                    points={[
+                      shape.x + shape.width,
+                      shape.y + shape.height / 2,
+                      shapes[i + 1].x,
+                      shapes[i + 1].y + shapes[i + 1].height / 2,
+                    ]}
+                    stroke="#000000"
+                  />
+                );
+              }
+              return null;
+            })}
+          </Layer>
+        </Stage>
+      </div>
+      <div>Editor</div>
     </>
   );
 };
