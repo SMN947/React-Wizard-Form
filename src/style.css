@@ -4,7 +4,7 @@ p {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 .mid {
-  width: 49%;
+  width: 50%;
   float: left;
   height: 100vh;
   box-sizing: border-box;
@@ -18,4 +18,40 @@ pre.mid {
 
 * {
   overflow: hidden;
+}
+
+.edit {
+  /* absolute at bottom right corner */
+  position: absolute;
+  bottom: 20;
+  right: 20px;
+  width: 200px;
+  /* height: 150px; */
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 10px;
+  z-index: 1;
+}
+
+.edit h4 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.5rem;
+}
+
+.edit .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: solid black 1px;
+  width: 20px;
+  height: 20px;
+  font-size: 14;
+  text-align: center;
+  line-height: 20px;
+  background: red;
+  color: white;
 }

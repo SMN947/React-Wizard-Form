@@ -12,7 +12,7 @@ const App = () => {
 
   return (
     <StrictMode>
-      {/* <button onClick={() => setShowAgent(!showAgent)}>
+      <button onClick={() => setShowAgent(!showAgent)}>
         {showAgent ? 'Ver Admin' : 'Ver Agente'}
       </button>
       {' - '}
@@ -20,8 +20,8 @@ const App = () => {
         ? 'La derecha seria la visual del agente'
         : 'Aqui se crearian los arboles de configuracion'}
       <hr />
-      {showAgent ? <Agent /> : <Admin />} */}
-      <Admin />
+      {showAgent ? <Agent /> : <Admin />}
+      {/* <Admin /> */}
     </StrictMode>
   );
 };
