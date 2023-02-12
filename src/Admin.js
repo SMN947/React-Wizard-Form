@@ -3,10 +3,21 @@ import { Stage, Layer, Rect, Line, Text, Group } from 'react-konva';
 import { DynamicRect } from './DynamicRect';
 
 const Admin = () => {
+  const generateRandomId = () => {
+    return Math.random().toString(36).slice(2, 9) + Math.random().toString(36).slice(2, 9);
+  };
+
   const [shapes, setShapes] = useState([
-    { x: 430, y: 20, width: 0, height: 0, id: 'Producto', text: 'producto' },
-    { x: 178, y: 415, width: 0, height: 0, id: 'Producto1', text: 'End' },
-    { x: 25, y: 25, width: 0, height: 0, id: 'Producto2', text: 'End' },
+    {
+      x: 430, y: 20, width: 0, height: 0, id: 'Producto', title: 'producto', key: generateRandomId()
+    },
+    { x: 178, y: 415, width: 0, height: 0, id: 'Producto1', title: 'End', key: generateRandomId() },
+    {
+      x: 25, y: 25, width: 0, height: 0, id: 'Producto2', title: 'End', key: generateRandomId(), "options": {
+        "name": "Opción 1",
+        "target": "test"
+      }
+    },
   ]);
   const stageRef = useRef(null);
   const [editPopUp, setEditPopUp] = useState(0);
@@ -17,17 +28,10 @@ const Admin = () => {
     const pos = stage.getPointerPosition();
     setShapes([
       ...shapes,
-      { x: 50, y: 50, width: 100, height: 50, id: 'Nuevo', text: 'nuevo' },
-      // { x: pos.x, y: pos.y, width: 100, height: 50, text: 'New Shape' },
+      { x: 50, y: 50, width: 100, height: 50, id: 'Nuevo', title: 'nuevo', key: generateRandomId() },
     ]);
   };
 
-  const handleClickAddOption = (shape, index) => {
-    shape.index = index;
-    console.log('asdasdasdasdsad', shape);
-    setEditPopUp(true);
-    setEditingShape(shape);
-  };
 
   const closePopUp = () => {
     setEditPopUp(false);
@@ -35,7 +39,7 @@ const Admin = () => {
 
   const flowchart = shapes.reduce((acc, shape, i) => {
     acc[`element${i + 1}`] = {
-      title: shape.text,
+      title: shape.title,
       options: {},
     };
     return acc;
@@ -50,8 +54,19 @@ const Admin = () => {
     });
   };
 
+  const handleClickEdit = (shape, index) => {
+    shape.index = index;
+    setEditPopUp(true);
+    setEditingShape(shape);
+  };
+
+
+  const handleClickAddOption = (shape, index) => {
+    console.log("Adding Option")
+    console.log(shape, index)
+  };
+
   const saveShapeInformation = () => {
-    console.log(editingShape)
     const newShapes = [...shapes];
     newShapes[editingShape.index] = editingShape;
     setShapes(newShapes);
@@ -109,11 +124,12 @@ const Admin = () => {
 
             {shapes.map((shape, i) => (
               <DynamicRect
-                key={shape.id}
+                key={shape.key}
                 shape={shape}
                 index={i}
                 onUpdate={(newShape) => updateShape(i, newShape)}
-                editFields={() => handleClickAddOption(shape, i)}
+                editFields={() => handleClickEdit(shape, i)}
+                addOption={() => handleClickAddOption(shape, i)}
               />
             ))}
 
@@ -128,10 +144,11 @@ const Admin = () => {
             <div>
               <label htmlFor="title">Título</label>
               <br />
-              <input type="text" name="title" id="title" value={editingShape.text} onChange={(event) => setEditingShape({ ...editingShape, [event.target.name]: event.target.value })} />
+              {/* <input type="text" name="title" id="title" value={editingShape.title} onChange={(event) => setEditingShape({ ...editingShape, [event.target.name]: event.target.value })} /> */}
+              <input type="text" name="title" id="title" value={editingShape.title} onChange={(event) => setEditingShape({ ...editingShape, title: event.target.value })} />
               <label htmlFor="id">Id</label>
               <br />
-              <input type="text" name="id" id="id" value={editingShape.id} onChange={(event) => setEditingShape({ ...editingShape, [event.target.name]: event.target.value })} />
+              <input type="text" name="id" id="id" value={editingShape.id} onChange={(event) => setEditingShape({ ...editingShape, id: event.target.value })} />
               <hr />
               <button onClick={() => saveShapeInformation()}>Guardar</button>
             </div>
