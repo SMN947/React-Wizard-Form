@@ -155,38 +155,6 @@ const Admin = () => {
     closePopUp()
   }
 
-
-  const handleDraw = () => {
-    const stage = stageRef.current.getStage();
-    const layer = stage.findOne('#grid-layer');
-    const width = stage.width();
-    const height = stage.height();
-
-    for (let x = 0; x < width; x += 50) {
-      layer.add(
-        new Konva.Line({
-          points: [x, 0, x, height],
-          stroke: 'lightgray',
-          strokeWidth: 1
-        })
-      );
-    }
-
-    for (let y = 0; y < height; y += 50) {
-      layer.add(
-        new Konva.Line({
-          points: [0, y, width, y],
-          stroke: 'lightgray',
-          strokeWidth: 1
-        })
-      );
-    }
-
-    layer.batchDraw();
-  };
-
-  handleDraw();
-
   return (
     <>
       <div className="mid">
@@ -200,9 +168,9 @@ const Admin = () => {
         <div className="mid">
           <h4>Codigo para guardar y mostrar al asesor</h4>
           <hr />
-          {/* <pre>{JSON.stringify(flowchart, null, 1)}</pre> */}
+          <pre>{JSON.stringify(flowchart, null, 1)}</pre>
           {/* <pre>{JSON.stringify(optionsList, null, 1)}</pre> */}
-          <pre>{JSON.stringify(fingTargetByKey("d2zfggxtk3h88v"), null, 1)}</pre>
+          {/* <pre>{JSON.stringify(fingTargetByKey("d2zfggxtk3h88v"), null, 1)}</pre> */}
         </div>
 
 
@@ -224,7 +192,7 @@ const Admin = () => {
         >
           <Layer>
 
-            {shapes.map((shape, i) => {
+            {/* {shapes.map((shape, i) => {
               if (shapes[i + 1]) {
                 return (
                   <Group>
@@ -242,7 +210,7 @@ const Admin = () => {
                 );
               }
               return null;
-            })}
+            })} */}
 
             {(shapes != null) ? (shapes.map((shape, i) => (
               <DynamicRect
@@ -255,7 +223,7 @@ const Admin = () => {
               />
             ))) : null}
 
-            {
+            {/* {
               optionsList.map((option, i) => {
                 console.log(option.target, fingTargetByKey(option.key));
                 if (option.target != "none") {
@@ -273,9 +241,9 @@ const Admin = () => {
                   );
                 }
               })
-            }
+            } */}
 
-            {shapes.map((shape, i) => {
+            {/* {shapes.map((shape, i) => {
               if (shapes[i + 1]) {
                 return (
                   <Line
@@ -291,7 +259,7 @@ const Admin = () => {
                 );
               }
               return null;
-            })}
+            })} */}
 
           </Layer>
           <Layer id="grid-layer" />
