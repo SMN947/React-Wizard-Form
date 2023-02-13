@@ -36,9 +36,31 @@ class DynamicRect extends Component {
     });
 
     this.setState({
-      width: 150,//tempText.width() + 20,
+      width: 150,
       height: tempText.height() + 50,
     });
+
+    if (this.state.options != undefined) {
+      this.setState({
+        options: this.state.options.map((option, index) => {
+          return {
+            ...option,
+            x: {
+              global: this.state.x + 150,
+              local: 20,
+            },
+            y: {
+              global: this.state.y + 100 + (index * 20),
+              local: 24 + (index * 20),
+            }
+          }
+        })
+      })
+    }
+
+    console.table(this.state.options)
+
+
   };
 
   handleClick = (e) => {
@@ -56,10 +78,34 @@ class DynamicRect extends Component {
     this.props.editFields(this.state.index);
   };
 
+  generateRandomId = () => {
+    return Math.random().toString(36).slice(2, 9) + Math.random().toString(36).slice(2, 9);
+  };
+
+  getSampleOption = () => {
+    return {
+      name: 'Opción 1',
+      target: "none",
+      key: this.generateRandomId(),
+      x: {
+        global: 0,
+        local: 0,
+      },
+      y: {
+        global: 0,
+        local: 0,
+      }
+    };
+  };
+
   handleClickAddOption = () => {
     if (this.state.options == undefined) {
       this.setState({
-        options: { name: 'Opción 1', target: 'test' }
+        options: [this.getSampleOption()]
+      })
+    } else {
+      this.setState({
+        options: [...this.state.options, this.getSampleOption()]
       })
     }
 
@@ -94,56 +140,11 @@ class DynamicRect extends Component {
             this.handleUpdate();
           }}
         >
-          <Rect
-            x={0}
-            y={0}
-            fill="#CDCDCD"
-            // width={this.state.width}
-            width={150}
-            height={this.state.height}
-          />
-          <Text
-            x={10}
-            y={25}
-            text={"ID: " + this.state.id}
-            fontSize={14}
-            fontFamily="Calibri"
-          />
-          <Text
-            x={10}
-            y={45}
-            text={"Titulo: " + this.state.title}
-            fontSize={14}
-            fontFamily="Calibri"
-          />
 
-          {/* ADD OPTION */}
+          {/* EDIT CARD */}
           <Group
             x={0}
             y={0}
-            onClick={() => this.handleClickAddOption(this.state)}
-          >
-            <Rect
-              x={0}
-              y={0}
-              fill="#ffD2FF"
-              width={150}
-              height={20}
-            />
-
-            <Text
-              x={3}
-              y={3}
-              text={"➕ Opcion"}
-              fontSize={14}
-              fontFamily="Calibri"
-            />
-          </Group>
-
-          {/* EDIT ELEMENT */}
-          <Group
-            x={0}
-            y={this.state.height}
             onClick={() => this.handleClickEdit(this.state)}
           >
             <Rect
@@ -161,10 +162,98 @@ class DynamicRect extends Component {
               fontSize={14}
               fontFamily="Calibri"
             />
+          </Group>
+
+          {/* ADD OPTION */}
+          <Group
+            x={0}
+            y={20}
+            onClick={() => this.handleClickAddOption(this.state)}
+          >
+            <Rect
+              x={0}
+              y={0}
+              fill="#ffD2FF"
+              width={150}
+              height={20}
+            />
 
             <Text
               x={3}
-              y={20}
+              y={3}
+              text={"➕ Añadir Opcion"}
+              fontSize={14}
+              fontFamily="Calibri"
+            />
+          </Group>
+
+          {/* CONTENIDO DEL CARD */}
+          <Group
+            x={0}
+            y={40}>
+            <Rect
+              fill="#CDCDCD"
+              // width={this.state.width}
+              width={150}
+              height={40}
+            />
+            <Text
+              x={10}
+              y={6}
+              text={"ID: " + this.state.id}
+              fontSize={14}
+              fontFamily="Calibri"
+            />
+            <Text
+              x={10}
+              y={25}
+              text={"Titulo: " + this.state.title}
+              fontSize={14}
+              fontFamily="Calibri"
+            />
+          </Group>
+
+          {/* OPCIONES */}
+          <Group
+            x={0}
+            y={80}>
+            <Rect
+              fill="#4acf3e"
+              // width={this.state.width}
+              width={150}
+              height={this.state.options != undefined ? (this.state.options.length * 20) + 20 : 20}
+            />
+            <Text
+              x={10}
+              y={6}
+              text={"Opciones"}
+              fontSize={14}
+              fontFamily="Calibri"
+            />
+            {
+              (this.state.options != undefined) ? (
+                this.state.options.map((key, index) => {
+                  return (
+                    <Text
+                      key={key.key}
+                      x={key.x.local}
+                      y={key.y.local}
+                      text={"🔘" + key.name}
+                      fontSize={14}
+                      fontFamily="Calibri"
+                    />
+                  )
+                })
+              ) : null
+
+            }
+          </Group>
+
+          {/* DEBUG */}
+          <Group
+            x={3}
+            y={80 + (this.state.options != undefined ? (this.state.options.length * 20) + 20 : 20)}>
+            <Text
               text={JSON.stringify(this.state, null, 2)}
               fontSize={14}
               fontFamily="Calibri" />

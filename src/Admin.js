@@ -3,21 +3,77 @@ import { Stage, Layer, Rect, Line, Text, Group } from 'react-konva';
 import { DynamicRect } from './DynamicRect';
 
 const Admin = () => {
+  // console.clear();
   const generateRandomId = () => {
     return Math.random().toString(36).slice(2, 9) + Math.random().toString(36).slice(2, 9);
   };
 
   const [shapes, setShapes] = useState([
     {
-      x: 430, y: 20, width: 0, height: 0, id: 'Producto', title: 'producto', key: generateRandomId()
+      "x": 39.9999223349016,
+      "y": 246.00241828858583,
+      "width": 150,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "nuevo",
+      "key": "blyc9ljyg4o641",
+      "index": 0,
+      "isDragging": false,
+      "options": [
+        {
+          "name": "Opción 1",
+          "target": "0anzko45m5vghw",
+          "key": "nnnf0uvcez8cuj",
+          "x": {
+            "global": 49.9999223349016,
+            "local": 20
+          },
+          "y": {
+            "global": 346.00241828858583,
+            "local": 24
+          }
+        },
+        {
+          "name": "Opción 1",
+          "target": "none",
+          "key": "b2au3j8vei6zhs",
+          "x": {
+            "global": 0,
+            "local": 0
+          },
+          "y": {
+            "global": 0,
+            "local": 0
+          }
+        }
+      ]
     },
-    { x: 178, y: 415, width: 0, height: 0, id: 'Producto1', title: 'End', key: generateRandomId() },
     {
-      x: 25, y: 25, width: 0, height: 0, id: 'Producto2', title: 'End', key: generateRandomId(), "options": {
-        "name": "Opción 1",
-        "target": "test"
-      }
-    },
+      "x": 366.00245421710974,
+      "y": 234.002270230101,
+      "width": 150,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "nuevo",
+      "key": "0anzko45m5vghw",
+      "index": 1,
+      "isDragging": false,
+      "options": [
+        {
+          "name": "Opción 1",
+          "target": "none",
+          "key": "miudu5548qmd8y",
+          "x": {
+            "global": 0,
+            "local": 0
+          },
+          "y": {
+            "global": 0,
+            "local": 0
+          }
+        }
+      ]
+    }
   ]);
   const stageRef = useRef(null);
   const [editPopUp, setEditPopUp] = useState(0);
@@ -37,13 +93,23 @@ const Admin = () => {
     setEditPopUp(false);
   };
 
-  const flowchart = shapes.reduce((acc, shape, i) => {
+  const flowchart = (shapes != null) ? shapes.reduce((acc, shape, i) => {
     acc[`element${i + 1}`] = {
       title: shape.title,
       options: {},
     };
     return acc;
-  }, {});
+  }, {}) : null;
+
+  const optionsList = (shapes != null) ? shapes.reduce((acc, item) => {
+    console.log("=================")
+    if (item.options) {
+      acc.push(...item.options);
+    }
+    return acc;
+  }, []) : null;
+
+
 
   const updateShape = (index, newShape) => {
     console.log('roger that', index, newShape);
@@ -60,10 +126,26 @@ const Admin = () => {
     setEditingShape(shape);
   };
 
+  const fingTargetByKey = (key) => {
+    for (let i = 0; i < optionsList.length; i++) {
+
+      if (optionsList[i].key === key) {
+        console.log("SI key", key, optionsList[i])
+        return optionsList[i];
+      } else {
+        console.log("NO key", key, optionsList[i])
+      }
+    }
+    return null;
+  }
+
 
   const handleClickAddOption = (shape, index) => {
     console.log("Adding Option")
     console.log(shape, index)
+    const newShapes = [...shapes];
+    newShapes[index] = shape;
+    setShapes(newShapes);
   };
 
   const saveShapeInformation = () => {
@@ -73,18 +155,58 @@ const Admin = () => {
     closePopUp()
   }
 
+
+  const handleDraw = () => {
+    const stage = stageRef.current.getStage();
+    const layer = stage.findOne('#grid-layer');
+    const width = stage.width();
+    const height = stage.height();
+
+    for (let x = 0; x < width; x += 50) {
+      layer.add(
+        new Konva.Line({
+          points: [x, 0, x, height],
+          stroke: 'lightgray',
+          strokeWidth: 1
+        })
+      );
+    }
+
+    for (let y = 0; y < height; y += 50) {
+      layer.add(
+        new Konva.Line({
+          points: [0, y, width, y],
+          stroke: 'lightgray',
+          strokeWidth: 1
+        })
+      );
+    }
+
+    layer.batchDraw();
+  };
+
+  handleDraw();
+
   return (
     <>
       <div className="mid">
-        <pre className="mid">
+
+        <div className="mid">
           <h4>Codigo del editor</h4>
           <hr />
-          {JSON.stringify(shapes, null, 1)}</pre>
-        <pre className="mid">
+          <pre>{JSON.stringify(shapes, null, 1)}</pre>
+        </div>
 
+        <div className="mid">
           <h4>Codigo para guardar y mostrar al asesor</h4>
           <hr />
-          {JSON.stringify(flowchart, null, 1)}</pre>
+          {/* <pre>{JSON.stringify(flowchart, null, 1)}</pre> */}
+          {/* <pre>{JSON.stringify(optionsList, null, 1)}</pre> */}
+          <pre>{JSON.stringify(fingTargetByKey("d2zfggxtk3h88v"), null, 1)}</pre>
+        </div>
+
+
+
       </div>
       <div className="mid">
         <button
@@ -102,7 +224,7 @@ const Admin = () => {
         >
           <Layer>
 
-            {/* {shapes.map((shape, i) => {
+            {shapes.map((shape, i) => {
               if (shapes[i + 1]) {
                 return (
                   <Group>
@@ -120,20 +242,59 @@ const Admin = () => {
                 );
               }
               return null;
-            })} */}
+            })}
 
-            {shapes.map((shape, i) => (
+            {(shapes != null) ? (shapes.map((shape, i) => (
               <DynamicRect
                 key={shape.key}
                 shape={shape}
                 index={i}
                 onUpdate={(newShape) => updateShape(i, newShape)}
                 editFields={() => handleClickEdit(shape, i)}
-                addOption={() => handleClickAddOption(shape, i)}
+                addOption={(newShape) => handleClickAddOption(newShape, i)}
               />
-            ))}
+            ))) : null}
+
+            {
+              optionsList.map((option, i) => {
+                console.log(option.target, fingTargetByKey(option.key));
+                if (option.target != "none") {
+                  return (
+                    <Line
+                      key={i}
+                      points={(option.x != undefined) ? [
+                        option.x.global + 75,
+                        option.y.global + 32,
+                        fingTargetByKey(option.key).x.global,
+                        fingTargetByKey(option.key).y.global
+                      ] : [0, 0, 0, 0]}
+                      stroke="#000000"
+                    />
+                  );
+                }
+              })
+            }
+
+            {shapes.map((shape, i) => {
+              if (shapes[i + 1]) {
+                return (
+                  <Line
+                    key={i}
+                    points={[
+                      shape.x + shape.width / 2,
+                      shape.y + shape.height / 2,
+                      shapes[i + 1].x + shapes[i + 1].width / 2,
+                      shapes[i + 1].y + shapes[i + 1].height / 2,
+                    ]}
+                    stroke="#ff0000"
+                  />
+                );
+              }
+              return null;
+            })}
 
           </Layer>
+          <Layer id="grid-layer" />
         </Stage>
       </div>
       {

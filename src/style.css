@@ -11,7 +11,7 @@ p {
   border-right: 1px solid #ccc;
 }
 
-pre.mid {
+pre {
   height: 75vh;
   overflow: scroll;
 }
