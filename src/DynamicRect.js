@@ -5,11 +5,11 @@ import './style.css';
 class DynamicRect extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {
       ...this.props.shape,
       index: this.props.index,
       isDragging: false,
+      isDrawingLine: false,
     };
   }
 
@@ -18,6 +18,8 @@ class DynamicRect extends Component {
       this.setState({
         ...this.props.shape,
         index: this.props.index,
+        isDrawingLine: this.props.isDrawingLine,
+
       });
       this.updateExtraFields();
     }
@@ -35,7 +37,7 @@ class DynamicRect extends Component {
     });
 
     this.setState({
-      width: 150,
+      width: 300,
       height: tempText.height() + 50,
     });
 
@@ -44,8 +46,9 @@ class DynamicRect extends Component {
         options: this.state.options.map((option, index) => {
           return {
             ...option,
+            isDrawingLine: this.props.isDrawingLine,
             x: {
-              global: this.state.x + 150,
+              global: this.state.x + 300,
               local: 20,
             },
             y: {
@@ -56,18 +59,18 @@ class DynamicRect extends Component {
         }),
       });
     }
-
-    console.table(this.state.options);
   };
 
   handleClick = (e) => {
-    console.table(e);
-    console.log(this.state);
+    // console.table(e);
   };
 
   handleUpdate = () => {
-    console.log('Actualizando shapes');
     this.props.onUpdate(this.state);
+
+    setTimeout(() => {
+      this.props.onUpdate(this.state);
+    }, 100);
   };
 
   handleClickEdit = () => {
@@ -111,8 +114,9 @@ class DynamicRect extends Component {
     this.props.addOption(this.state);
   };
 
-  optionLineAdd = (data) => {
-    this.props.optionLineAdd(data);
+  optionLineAdd = (data, type) => {
+    this.props.optionLineAdd(data, type);
+    this.handleUpdate();
   };
 
   render() {
@@ -126,9 +130,8 @@ class DynamicRect extends Component {
           scaleY={this.state.isDragging ? 1.2 : 1}
           shadowOffsetX={this.state.isDragging ? 10 : 5}
           shadowOffsetY={this.state.isDragging ? 10 : 5}
-          // onClick={() => this.handleClick(this.state)}
+          onClick={() => { this.optionLineAdd(this.state, "card") }}
           onDragStart={() => {
-            console.log('dragging');
             this.setState({
               isDragging: true,
             });
@@ -143,9 +146,23 @@ class DynamicRect extends Component {
             this.handleUpdate();
           }}
         >
+          {/* CONECT */}
+          {this.state.isDrawingLine ? (<Group x={0} y={0} onClick={() => this.handleClickEdit(this.state)}>
+            <Rect x={0} y={0} fill="#ffD2FF" width={300} height={20} />
+
+            <Text
+              x={3}
+              y={3}
+              text={'✍ Editar'}
+              fontSize={14}
+              fontFamily="Calibri"
+            />
+          </Group>) : null}
+
+
           {/* EDIT CARD */}
           <Group x={0} y={0} onClick={() => this.handleClickEdit(this.state)}>
-            <Rect x={0} y={0} fill="#ffD2FF" width={150} height={20} />
+            <Rect x={0} y={0} fill="#ffD2FF" width={300} height={20} />
 
             <Text
               x={3}
@@ -162,7 +179,7 @@ class DynamicRect extends Component {
             y={20}
             onClick={() => this.handleClickAddOption(this.state)}
           >
-            <Rect x={0} y={0} fill="#ffD2FF" width={150} height={20} />
+            <Rect x={0} y={0} fill="#ffD2FF" width={300} height={20} />
 
             <Text
               x={3}
@@ -177,8 +194,7 @@ class DynamicRect extends Component {
           <Group x={0} y={40}>
             <Rect
               fill="#CDCDCD"
-              // width={this.state.width}
-              width={150}
+              width={300}
               height={40}
             />
             <Text
@@ -202,7 +218,7 @@ class DynamicRect extends Component {
             <Rect
               fill="#4acf3e"
               // width={this.state.width}
-              width={150}
+              width={300}
               height={
                 this.state.options != undefined
                   ? this.state.options.length * 20 + 20
@@ -218,45 +234,33 @@ class DynamicRect extends Component {
             />
             {this.state.options != undefined
               ? this.state.options.map((key, index) => {
-                  return (
-                    <Group x={key.x.local} y={key.y.local}>
-                      <Text
-                        x={0}
-                        y={0}
-                        key={key.key + 'point'}
-                        text={'🔘'}
-                        fontSize={14}
-                        fontFamily="Calibri"
-                        onClick={() => this.optionLineAdd(key)}
-                      />
-                      <Text
-                        x={20}
-                        y={0}
-                        key={key.key}
-                        text={key.name}
-                        fontSize={14}
-                        fontFamily="Calibri"
-                      />
-                      <Text
-                        x={80}
-                        y={0}
-                        key={key.key + 'coors'}
-                        text={
-                          key.x.global.toFixed(2) +
-                          '-' +
-                          key.y.global.toFixed(2)
-                        }
-                        fontSize={14}
-                        fontFamily="Calibri"
-                      />
-                    </Group>
-                  );
-                })
+                return (
+                  <Group x={key.x.local} y={key.y.local} key={"Group" + key.key}>
+                    <Text
+                      x={0}
+                      y={0}
+                      key={key.key + 'point'}
+                      text={'🔌'}
+                      fontSize={14}
+                      fontFamily="Calibri"
+                      onClick={() => this.optionLineAdd(key, "option")}
+                    />
+                    <Text
+                      x={20}
+                      y={0}
+                      key={key.key}
+                      text={key.name}
+                      fontSize={14}
+                      fontFamily="Calibri"
+                    />
+                  </Group>
+                );
+              })
               : null}
           </Group>
 
           {/* DEBUG */}
-          <Group
+          {/* <Group
             x={3}
             y={
               80 +
@@ -264,13 +268,14 @@ class DynamicRect extends Component {
                 ? this.state.options.length * 20 + 20
                 : 20)
             }
+            key={"Group" + this.state.id}
           >
             <Text
               text={JSON.stringify(this.state, null, 2)}
               fontSize={14}
               fontFamily="Calibri"
             />
-          </Group>
+          </Group> */}
         </Group>
       </>
     );
