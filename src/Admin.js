@@ -3,7 +3,6 @@ import { Stage, Layer, Rect, Line, Text, Group } from 'react-konva';
 import { DynamicRect } from './DynamicRect';
 
 const Admin = () => {
-  // console.clear();
   const generateRandomId = () => {
     return (
       Math.random().toString(36).slice(2, 9) +
@@ -15,17 +14,20 @@ const Admin = () => {
   const stageRef = useRef(null);
   const [editPopUp, setEditPopUp] = useState(0);
   const [editingShape, setEditingShape] = useState(null);
+  const [editPopUpOption, setEditPopUpOption] = useState(0);
+  const [editingOption, setEditingOption] = useState(null);
   const [lineShapes, setLineShapes] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isDrawingLine, setIsDrawingLine] = useState(false);
   const [scale, setScale] = useState(1);
+  const [isRemovinOption, setIsRemovingOption] = useState(false);
 
   const addShape = () => {
     const stage = stageRef.current;
     const pointerPos = stage.getPointerPosition();
     const scale = stage.scaleX(); // Get the current scale factor of the stage
-    const x = ((pointerPos.x - stage.x()) / scale) + 100; // Adjust the x coordinate of the new shape based on the current position and scale factor of the stage
-    const y = ((pointerPos.y - stage.y()) / scale) + 100; // Adjust the y coordinate of the new shape based on the current position and scale factor of the stage
+    const x = ((pointerPos.x - stage.x()) / scale); // Adjust the x coordinate of the new shape based on the current position and scale factor of the stage
+    const y = ((pointerPos.y - stage.y()) / scale); // Adjust the y coordinate of the new shape based on the current position and scale factor of the stage
     setShapes([
       ...shapes,
       {
@@ -72,6 +74,10 @@ const Admin = () => {
     setEditPopUp(false);
   };
 
+  const closePopUpOption = () => {
+    setEditPopUpOption(false);
+  };
+
   const flowchart =
     shapes != null
       ? shapes.reduce((acc, shape, i) => {
@@ -94,11 +100,16 @@ const Admin = () => {
       : null;
 
   const updateShape = (index, newShape) => {
-    setShapes((prevShapes) => {
-      const updatedShapes = [...prevShapes];
-      updatedShapes[index] = newShape;
-      return updatedShapes;
-    });
+    if (isRemovinOption) {
+      setIsRemovingOption(false);
+      return;
+    } else {
+      setShapes((prevShapes) => {
+        const updatedShapes = [...prevShapes];
+        updatedShapes[index] = newShape;
+        return updatedShapes;
+      });
+    }
   };
 
   const handleClickEdit = (shape, index) => {
@@ -119,10 +130,29 @@ const Admin = () => {
     setShapes(newShapes);
     closePopUp();
   };
+  const saveOptionInformation = () => {
+    let newShapes = [...shapes];
+    let optionToUpdate = newShapes.find((obj) =>
+      obj.options.find((option) => option.key === editingOption.key)
+    );
+    let updatedShapes = newShapes.map((obj) => {
+      if (obj.id === optionToUpdate?.id) {
+        let updatedOptions = obj.options?.map((option) => {
+          if (option.key === editingOption.key) {
+            return { ...option, ...editingOption };
+          }
+          return option;
+        });
+        return { ...obj, options: updatedOptions };
+      }
+      return obj;
+    });
+    setEditPopUpOption(false);
+    setEditingOption(null);
+    // setShapes(updatedShapes);
+  };
 
   const handleOptionLine = (shapeSelected, type) => {
-    console.log(shapeSelected, type, selectedOptions, selectedOptions.length)
-
     if (selectedOptions.length == 0 && type == 'option') {
       setSelectedOptions([shapeSelected]);
     } else if (selectedOptions.length == 1 && type == "card") {
@@ -170,14 +200,7 @@ const Admin = () => {
       startY + 10,
       endX + 150,
       endY,
-    ]
-    console.clear()
-    console.log([
-      lineStart.x.global,
-      lineStart.y.global,
-      lineEnd.x,
-      lineEnd.y,
-    ])
+    ];
     return coords;
   };
 
@@ -199,21 +222,74 @@ const Admin = () => {
     return thisOption;
   };
 
+  const handleClickEditOption = (option, index) => {
+    setEditingOption(option)
+    setEditPopUpOption(true)
+  };
+
+  // a method to remove a shape from shapes and remove any lines connected to it
+  const handleClickRemoveShape = (shapeKey, index) => {
+    let linesToRemove = [shapeKey.key]
+    shapeKey.options?.map((option) => {
+      linesToRemove.push(option.key)
+    })
+    console.log(linesToRemove)
+    console.log(lineShapes)
+    console.log(lineShapes.filter((line) => !linesToRemove.includes(line.start) && !linesToRemove.includes(line.end)))
+    setLineShapes(lineShapes.filter((line) => !linesToRemove.includes(line.start) && !linesToRemove.includes(line.end)));
+    shapeKey = shapeKey.key
+    setIsRemovingOption(true);
+    const newShapes = [...shapes];
+    const shapeToRemove = newShapes.find((obj) => obj.key === shapeKey);
+    console.log(shapeToRemove)
+    if (shapeToRemove) {
+      const updatedShapes = newShapes.filter((obj) => obj.key !== shapeKey);
+
+      setTimeout(() => {
+        setShapes(updatedShapes);
+      }, 500);
+    }
+  };
+
+  const handleClickRemoveOption = (optionKey, index) => {
+    setIsRemovingOption(true);
+    optionKey = optionKey.key
+    console.log(optionKey)
+    const newShapes = [...shapes];
+    const optionToRemove = newShapes.find((obj) =>
+      obj.options?.find((option) => option.key === optionKey)
+    );
+    console.log(optionToRemove)
+    console.log(lineShapes)
+    if (optionToRemove) {
+      const updatedOptions = optionToRemove.options.filter((option) => option.key !== optionKey);
+      console.log(updatedOptions)
+      const updatedShapes = newShapes.map((obj) => {
+        if (obj.key === optionToRemove.key) {
+          return { ...obj, options: updatedOptions };
+        }
+        return obj;
+      });
+
+      setLineShapes(lineShapes.filter((line) => line.start !== optionKey && line.end !== optionKey));
+      setShapes(updatedShapes);
+    }
+  };
+
   return (
     <>
       <div className="mid">
-        <div className="mid">
-          <h4>Codigo del editor</h4>
-          <hr />
-          <pre>{JSON.stringify(shapes, null, 1)}</pre>
-        </div>
+        {/* <div className="mid"> */}
+        <h4>Codigo del editor</h4>
+        <hr />
+        <pre>{JSON.stringify(shapes, null, 1)}</pre>
+        {/* </div> */}
 
-        <div className="mid">
+        {/* <div className="mid">
           <h4>Codigo para guardar y mostrar al asesor</h4>
           <hr />
-          {/* <pre>{JSON.stringify(lineShapes, null, 1)}</pre> */}
           <pre>{JSON.stringify(optionsList, null, 1)}</pre>
-        </div>
+        </div> */}
       </div>
       <div className="mid">
         <button
@@ -248,6 +324,9 @@ const Admin = () => {
                   optionLineAdd={(selectedOption, type) =>
                     handleOptionLine(selectedOption, type)
                   }
+                  editOption={(option, index) => handleClickEditOption(option, index)}
+                  removeOption={(option, index) => handleClickRemoveOption(option, index)}
+                  removeCard={(card, index) => handleClickRemoveShape(card, index)}
                 />
               )) : null}
 
@@ -281,41 +360,71 @@ const Admin = () => {
           <Layer id="grid-layer" />
         </Stage>
       </div>
-      {editPopUp ? (
-        <div className="edit">
-          <h4> Editando</h4>
-          <hr />
-          <div>
-            <label htmlFor="title">Título</label>
-            <br />
-            <input
-              type="text"
-              name="title"
-              id="title"
-              value={editingShape.title}
-              onChange={(event) =>
-                setEditingShape({ ...editingShape, title: event.target.value })
-              }
-            />
-            <label htmlFor="id">Id</label>
-            <br />
-            <input
-              type="text"
-              name="id"
-              id="id"
-              value={editingShape.id}
-              onChange={(event) =>
-                setEditingShape({ ...editingShape, id: event.target.value })
-              }
-            />
+      {
+        editPopUp ? (
+          <div className="edit">
+            <h4> Editando</h4>
             <hr />
-            <button onClick={() => saveShapeInformation()}>Guardar</button>
+            <div>
+              <label htmlFor="title">Título</label>
+              <br />
+              <input
+                type="text"
+                name="title"
+                id="title"
+                value={editingShape.title}
+                onChange={(event) =>
+                  setEditingShape({ ...editingShape, title: event.target.value })
+                }
+              />
+              <label htmlFor="id">Id</label>
+              <br />
+              <input
+                type="text"
+                name="id"
+                id="id"
+                value={editingShape.id}
+                onChange={(event) =>
+                  setEditingShape({ ...editingShape, id: event.target.value })
+                }
+              />
+              <hr />
+              <button onClick={() => saveShapeInformation()}>Guardar</button>
+            </div>
+            <div className="close" onClick={() => closePopUp()}>
+              X
+            </div>
           </div>
-          <div className="close" onClick={() => closePopUp()}>
-            X
+        ) : null
+      }
+
+      {/* PopUp Edit Option */}
+      {
+        editPopUpOption ? (
+          <div className="edit">
+            <h4> Editando Opcion</h4>
+            <hr />
+            <div>
+              <label htmlFor="name">Título</label>
+              <hr />
+              <input
+                type="text"
+                name="name"
+                id="name"
+                value={editingOption.name}
+                onChange={(event) =>
+                  setEditingOption({ ...editingOption, name: event.target.value })
+                }
+              />
+              <hr />
+              <button onClick={() => saveOptionInformation()}>Guardar</button>
+            </div>
+            <div className="close" onClick={() => closePopUpOption()}>
+              X
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null
+      }
     </>
   );
 };

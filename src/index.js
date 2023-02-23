@@ -8,6 +8,7 @@ const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 const App = () => {
+  console.clear()
   const [showAgent, setShowAgent] = useState(true);
 
   return (

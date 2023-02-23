@@ -19,9 +19,10 @@ class DynamicRect extends Component {
         ...this.props.shape,
         index: this.props.index,
         isDrawingLine: this.props.isDrawingLine,
-
+      }, () => {
+        this.updateExtraFields()
+        this.forceUpdate();
       });
-      this.updateExtraFields();
     }
   }
 
@@ -30,6 +31,7 @@ class DynamicRect extends Component {
   }
 
   updateExtraFields = () => {
+    console.log("Actualizando campos extra")
     let tempText = new window.Konva.Text({
       text: this.state.title,
       fontSize: 14,
@@ -66,7 +68,7 @@ class DynamicRect extends Component {
   };
 
   handleUpdate = () => {
-    this.props.onUpdate(this.state);
+    // this.props.onUpdate(this.state);
 
     setTimeout(() => {
       this.props.onUpdate(this.state);
@@ -114,8 +116,22 @@ class DynamicRect extends Component {
     this.props.addOption(this.state);
   };
 
+  handleClickRemoveCard = () => {
+    this.props.removeCard(this.state);
+  };
+
   optionLineAdd = (data, type) => {
     this.props.optionLineAdd(data, type);
+    this.handleUpdate();
+  };
+
+  editOption = (data) => {
+    this.props.editOption(data);
+    this.handleUpdate();
+  };
+
+  removeOption = (data) => {
+    this.props.removeOption(data);
     this.handleUpdate();
   };
 
@@ -190,8 +206,25 @@ class DynamicRect extends Component {
             />
           </Group>
 
+          {/* REMOVE CARD */}
+          <Group
+            x={0}
+            y={40}
+            onClick={() => this.handleClickRemoveCard(this.state)}
+          >
+            <Rect x={0} y={0} fill="#ffD2FF" width={300} height={20} />
+
+            <Text
+              x={3}
+              y={3}
+              text={'❌ Eliminar Tarjeta'}
+              fontSize={14}
+              fontFamily="Calibri"
+            />
+          </Group>
+
           {/* CONTENIDO DEL CARD */}
-          <Group x={0} y={40}>
+          <Group x={0} y={60}>
             <Rect
               fill="#CDCDCD"
               width={300}
@@ -200,24 +233,23 @@ class DynamicRect extends Component {
             <Text
               x={10}
               y={6}
-              text={'ID: ' + this.state.id}
+              text={'Titulo: ' + this.state.title}
               fontSize={14}
               fontFamily="Calibri"
             />
             <Text
               x={10}
               y={25}
-              text={'Titulo: ' + this.state.title}
+              text={'Key: ' + this.state.key}
               fontSize={14}
               fontFamily="Calibri"
             />
           </Group>
 
           {/* OPCIONES */}
-          <Group x={0} y={80}>
+          <Group x={0} y={100}>
             <Rect
               fill="#4acf3e"
-              // width={this.state.width}
               width={300}
               height={
                 this.state.options != undefined
@@ -235,10 +267,12 @@ class DynamicRect extends Component {
             {this.state.options != undefined
               ? this.state.options.map((key, index) => {
                 return (
-                  <Group x={key.x.local} y={key.y.local} key={"Group" + key.key}>
+                  <Group x={key.x.local} y={20 + (20 * index)} height={20} key={"Group" + key.key}>
                     <Text
                       x={0}
                       y={0}
+                      width={20}
+                      height={20}
                       key={key.key + 'point'}
                       text={'🔌'}
                       fontSize={14}
@@ -247,6 +281,28 @@ class DynamicRect extends Component {
                     />
                     <Text
                       x={20}
+                      y={0}
+                      width={20}
+                      height={20}
+                      key={key.key + 'edit'}
+                      text={'✍'}
+                      fontSize={14}
+                      fontFamily="Calibri"
+                      onClick={() => this.editOption(key)}
+                    />
+                    <Text
+                      x={40}
+                      y={0}
+                      width={20}
+                      height={20}
+                      key={key.key + 'remove'}
+                      text={'❌'}
+                      fontSize={14}
+                      fontFamily="Calibri"
+                      onClick={() => this.removeOption(key)}
+                    />
+                    <Text
+                      x={60}
                       y={0}
                       key={key.key}
                       text={key.name}
@@ -258,24 +314,6 @@ class DynamicRect extends Component {
               })
               : null}
           </Group>
-
-          {/* DEBUG */}
-          {/* <Group
-            x={3}
-            y={
-              80 +
-              (this.state.options != undefined
-                ? this.state.options.length * 20 + 20
-                : 20)
-            }
-            key={"Group" + this.state.id}
-          >
-            <Text
-              text={JSON.stringify(this.state, null, 2)}
-              fontSize={14}
-              fontFamily="Calibri"
-            />
-          </Group> */}
         </Group>
       </>
     );
