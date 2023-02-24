@@ -21,7 +21,6 @@ class DynamicRect extends Component {
         isDrawingLine: this.props.isDrawingLine,
       }, () => {
         this.updateExtraFields()
-        this.forceUpdate();
       });
     }
   }
@@ -38,13 +37,12 @@ class DynamicRect extends Component {
       fontFamily: 'Calibri',
     });
 
-    this.setState({
-      width: 300,
-      height: tempText.height() + 50,
-    });
+
 
     if (this.state.options != undefined) {
       this.setState({
+        width: 300,
+        height: tempText.height() + 50,
         options: this.state.options.map((option, index) => {
           return {
             ...option,
@@ -59,6 +57,15 @@ class DynamicRect extends Component {
             },
           };
         }),
+      }, () => {
+        this.forceUpdate();
+      });
+    } else {
+      this.setState({
+        width: 300,
+        height: tempText.height() + 50,
+      }, () => {
+        this.forceUpdate();
       });
     }
   };
@@ -68,11 +75,7 @@ class DynamicRect extends Component {
   };
 
   handleUpdate = () => {
-    // this.props.onUpdate(this.state);
-
-    setTimeout(() => {
-      this.props.onUpdate(this.state);
-    }, 100);
+    this.props.onUpdate(this.state);
   };
 
   handleClickEdit = () => {
@@ -150,16 +153,18 @@ class DynamicRect extends Component {
           onDragStart={() => {
             this.setState({
               isDragging: true,
+            }, () => {
+              this.handleUpdate();
             });
-            this.handleUpdate();
           }}
           onDragEnd={(e) => {
             this.setState({
               isDragging: false,
               x: e.target.x(),
               y: e.target.y(),
+            }, () => {
+              this.handleUpdate();
             });
-            this.handleUpdate();
           }}
         >
           {/* CONECT */}

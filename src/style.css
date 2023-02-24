@@ -34,8 +34,13 @@ p {
 }
 
 pre {
-	height: 75vh;
+	height: 90vh;
 	overflow: scroll;
+	font-size: 10px;
+}
+textarea {
+	width: 100%;
+	height: 90vh;
 }
 
 * {

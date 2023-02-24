@@ -10,17 +10,258 @@ const Admin = () => {
     );
   };
 
-  const [shapes, setShapes] = useState([]);
+  const [shapes, setShapes] = useState([
+    {
+      "x": 203.25,
+      "y": 63,
+      "width": 300,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "Que producto tiene el usuario",
+      "key": "lhwqtzib18ty31",
+      "index": 0,
+      "isDragging": false,
+      "isDrawingLine": false,
+      "options": [
+        {
+          "name": "Producto1",
+          "target": "99jwxw3wl73yg3",
+          "key": "k4gudv7xurlqjp",
+          "x": {
+            "global": 503.25,
+            "local": 20
+          },
+          "y": {
+            "global": 163,
+            "local": 24
+          },
+          "isDrawingLine": false
+        },
+        {
+          "name": "Producto2",
+          "target": "bygycs21tpi9e2",
+          "key": "sbq1ygv1vvat4g",
+          "x": {
+            "global": 503.25,
+            "local": 20
+          },
+          "y": {
+            "global": 183,
+            "local": 44
+          },
+          "isDrawingLine": false
+        }
+      ]
+    },
+    {
+      "x": 703.6323,
+      "y": 228.5,
+      "width": 300,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "Esta suspendido",
+      "key": "bygycs21tpi9e2",
+      "index": 1,
+      "isDragging": false,
+      "isDrawingLine": false,
+      "options": [
+        {
+          "name": "si",
+          "target": "cz4yr4516na0q6",
+          "key": "nsjcw7jmjvygr3",
+          "x": {
+            "global": 1003.6323,
+            "local": 20
+          },
+          "y": {
+            "global": 328.5,
+            "local": 24
+          },
+          "isDrawingLine": false
+        },
+        {
+          "name": "no",
+          "target": "s4wwv6q2yoljlo",
+          "key": "o1x1gnyg8i8yy3",
+          "x": {
+            "global": 1003.6323,
+            "local": 20
+          },
+          "y": {
+            "global": 348.5,
+            "local": 44
+          },
+          "isDrawingLine": false
+        }
+      ]
+    },
+    {
+      "x": -165.1496000000001,
+      "y": 229.40270000000004,
+      "width": 300,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "Esta suspendido",
+      "key": "99jwxw3wl73yg3",
+      "index": 2,
+      "isDragging": false,
+      "isDrawingLine": false,
+      "options": [
+        {
+          "name": "si",
+          "target": "x5ivrnz85utksv",
+          "key": "ng9efm5oxpsfu3",
+          "x": {
+            "global": 134.8503999999999,
+            "local": 20
+          },
+          "y": {
+            "global": 329.40270000000004,
+            "local": 24
+          },
+          "isDrawingLine": false
+        },
+        {
+          "name": "no",
+          "target": "ef6bl3hth2o3g7",
+          "key": "f02njdyekudxi1",
+          "x": {
+            "global": 134.8503999999999,
+            "local": 20
+          },
+          "y": {
+            "global": 349.40270000000004,
+            "local": 44
+          },
+          "isDrawingLine": false
+        }
+      ]
+    },
+    {
+      "x": -249.8533000000001,
+      "y": 485.86580000000015,
+      "width": 300,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "Producto1_Suspendido",
+      "key": "x5ivrnz85utksv",
+      "index": 3,
+      "isDragging": false,
+      "isDrawingLine": false,
+      "options": []
+    },
+    {
+      "x": 81.03330000000003,
+      "y": 474.15300000000013,
+      "width": 300,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "Producto1_NoSuspendido",
+      "key": "ef6bl3hth2o3g7",
+      "index": 4,
+      "isDragging": false,
+      "isDrawingLine": false,
+      "options": []
+    },
+    {
+      "x": 405.26430000000005,
+      "y": 495.96670000000006,
+      "width": 300,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "Producto2Suspendido",
+      "key": "cz4yr4516na0q6",
+      "index": 5,
+      "isDragging": false,
+      "isDrawingLine": false,
+      "options": []
+    },
+    {
+      "x": 765.8461,
+      "y": 519.9177000000001,
+      "width": 300,
+      "height": 64,
+      "id": "Nuevo",
+      "title": "Producto2_NoSuspendido",
+      "key": "s4wwv6q2yoljlo",
+      "index": 6,
+      "isDragging": false,
+      "isDrawingLine": false,
+      "options": []
+    }
+  ]);
+
   const stageRef = useRef(null);
   const [editPopUp, setEditPopUp] = useState(0);
   const [editingShape, setEditingShape] = useState(null);
   const [editPopUpOption, setEditPopUpOption] = useState(0);
   const [editingOption, setEditingOption] = useState(null);
-  const [lineShapes, setLineShapes] = useState([]);
+  const [lineShapes, setLineShapes] = useState([
+    {
+      "start": "k4gudv7xurlqjp",
+      "end": "99jwxw3wl73yg3"
+    },
+    {
+      "start": "sbq1ygv1vvat4g",
+      "end": "bygycs21tpi9e2"
+    },
+    {
+      "start": "nsjcw7jmjvygr3",
+      "end": "cz4yr4516na0q6"
+    },
+    {
+      "start": "o1x1gnyg8i8yy3",
+      "end": "s4wwv6q2yoljlo"
+    },
+    {
+      "start": "ng9efm5oxpsfu3",
+      "end": "x5ivrnz85utksv"
+    },
+    {
+      "start": "f02njdyekudxi1",
+      "end": "ef6bl3hth2o3g7"
+    }
+  ]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isDrawingLine, setIsDrawingLine] = useState(false);
   const [scale, setScale] = useState(1);
   const [isRemovinOption, setIsRemovingOption] = useState(false);
+
+  const parseShapesToFlow = (json) => {
+    const result = {};
+
+    const producto = json[0];
+    result.producto = {
+      title: producto.title,
+      options: {},
+    };
+
+    for (const option of producto.options) {
+      result.producto.options[option.name] = option.name;
+    }
+
+    for (let i = 1; i < json.length; i++) {
+      const node = json[i];
+
+      if (node.options.length > 0) {
+        const options = {};
+        for (const option of node.options) {
+          options[option.name] = option.title;
+        }
+        result[node.key] = {
+          title: node.title,
+          options: options,
+        };
+      } else {
+        result[node.key] = {
+          transfer: node.title,
+        };
+      }
+    }
+
+    return result;
+  }
+
 
   const addShape = () => {
     const stage = stageRef.current;
@@ -149,7 +390,7 @@ const Admin = () => {
     });
     setEditPopUpOption(false);
     setEditingOption(null);
-    // setShapes(updatedShapes);
+    setShapes(updatedShapes);
   };
 
   const handleOptionLine = (shapeSelected, type) => {
@@ -164,7 +405,7 @@ const Admin = () => {
         end: shapeSelected.key,
       };
 
-      let targetKey = selectedOptions.key;
+      let targetKey = selectedOptions[0].key;
       let targetValue = shapeSelected.key;
 
       const updatedShapes = shapes.map((item) => {
@@ -197,7 +438,7 @@ const Admin = () => {
 
     let coords = [
       (startX > endX + 300) ? startX - 300 : startX,
-      startY + 10,
+      startY + 25,
       endX + 150,
       endY,
     ];
@@ -278,20 +519,20 @@ const Admin = () => {
 
   return (
     <>
-      <div className="mid">
-        {/* <div className="mid"> */}
-        <h4>Codigo del editor</h4>
-        <hr />
-        <pre>{JSON.stringify(shapes, null, 1)}</pre>
-        {/* </div> */}
+      <div className="mid2">
+        <div className="mid">
+          <h4>Codigo del editor</h4>
+          <hr />
+          <pre>{JSON.stringify(shapes, null, 1)}</pre>
+        </div>
 
-        {/* <div className="mid">
+        <div className="mid">
           <h4>Codigo para guardar y mostrar al asesor</h4>
           <hr />
-          <pre>{JSON.stringify(optionsList, null, 1)}</pre>
-        </div> */}
+          <pre>{JSON.stringify(parseShapesToFlow(shapes), null, 1)}</pre>
+        </div>
       </div>
-      <div className="mid">
+      <div className="mid1">
         <button
           onClick={() => {
             addShape();

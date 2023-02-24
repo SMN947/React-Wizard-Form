@@ -6,46 +6,48 @@ class StepperForm extends Component {
     super(props);
     this.state = {
       formData: {
-        producto: {
-          title: 'Que producto tiene el usuario',
-          options: {
-            Producto1: 'Producto1',
-            Producto2: 'Producto2',
-          },
+        "lhwqtzib18ty31": {
+          "title": "Que producto tiene el usuario",
+          "options": {
+            "99jwxw3wl73yg3": "Producto1",
+            "bygycs21tpi9e2": "Producto2"
+          }
         },
-        Producto1: {
-          title: 'Esta suspendido',
-          options: {
-            Si: 'Producto1Suspendido',
-            No: 'Producto1NoSuspendido',
-          },
+        "bygycs21tpi9e2": {
+          "title": "Esta suspendido",
+          "options": {
+            "cz4yr4516na0q6": "si",
+            "s4wwv6q2yoljlo": "no"
+          }
         },
-        Producto2: {
-          title: 'Esta suspendido',
-          options: {
-            Si: 'Producto2Suspendido',
-            No: 'Producto2NoSuspendido',
-          },
+        "99jwxw3wl73yg3": {
+          "title": "Esta suspendido",
+          "options": {
+            "x5ivrnz85utksv": "si",
+            "ef6bl3hth2o3g7": "no"
+          }
         },
-        Producto1Suspendido: {
-          transfer: 'Producto1_Suspendido',
+        "x5ivrnz85utksv": {
+          "transfer": "Producto1_Suspendido"
         },
-        Producto1NoSuspendido: {
-          transfer: 'Producto1_NoSuspendido',
+        "ef6bl3hth2o3g7": {
+          "transfer": "Producto1_NoSuspendido"
         },
-        Producto2Suspendido: {
-          transfer: 'Producto2_Suspendido',
+        "cz4yr4516na0q6": {
+          "transfer": "Producto2Suspendido"
         },
-        Producto2NoSuspendido: {
-          transfer: 'Producto2_NoSuspendido',
-        },
+        "s4wwv6q2yoljlo": {
+          "transfer": "Producto2_NoSuspendido"
+        }
       },
-      currentStep: 'producto',
+      currentStep: 'lhwqtzib18ty31',
       selectedOption: '',
       selectionHistory: [],
     };
   }
   handleOptionChange = (event) => {
+    this.state.formData[this.state.currentStep].transfer
+    console.log(event.target.value)
     console.log(this.state.formData[event.target.value]);
 
     this.setState({ selectedOption: event.target.value });
@@ -57,8 +59,8 @@ class StepperForm extends Component {
     }));
   };
   reset() {
-    this.setState({ selectedOption: 'producto' });
-    this.setState({ currentStep: 'producto' });
+    this.setState({ selectedOption: 'lhwqtzib18ty31' });
+    this.setState({ currentStep: 'lhwqtzib18ty31' });
     this.setState((prevState) => ({
       ...prevState,
       selectionHistory: [],
@@ -87,11 +89,11 @@ class StepperForm extends Component {
                   <input
                     type="radio"
                     id={key}
-                    value={value}
+                    value={key}
                     checked={this.state.selectedOption === key}
                     onChange={this.handleOptionChange}
                   />
-                  <label htmlFor={key}>{key}</label>
+                  <label htmlFor={key}>{value}</label>
                 </div>
               ))}
             </div>
