@@ -71,19 +71,19 @@ const Admin = () => {
     }
 
     return result;
-  }
+  };
 
   const saveTreeToDB = () => {
     localStorage.setItem('flowchart', JSON.stringify(shapes));
     localStorage.setItem('flowchartLines', JSON.stringify(lineShapes));
-  }
+  };
 
   const addShape = () => {
     const stage = stageRef.current;
     const pointerPos = stage.getPointerPosition();
     const scale = stage.scaleX();
-    const x = ((pointerPos.x - stage.x()) / scale);
-    const y = ((pointerPos.y - stage.y()) / scale);
+    const x = (pointerPos.x - stage.x()) / scale;
+    const y = (pointerPos.y - stage.y()) / scale;
     setShapes([
       ...shapes,
       {
@@ -126,7 +126,6 @@ const Admin = () => {
     }
   };
 
-
   const closePopUp = () => {
     setEditPopUp(false);
   };
@@ -138,22 +137,22 @@ const Admin = () => {
   const flowchart =
     shapes != null
       ? shapes.reduce((acc, shape, i) => {
-        acc[`element${i + 1}`] = {
-          title: shape.title,
-          options: {},
-        };
-        return acc;
-      }, {})
+          acc[`element${i + 1}`] = {
+            title: shape.title,
+            options: {},
+          };
+          return acc;
+        }, {})
       : null;
 
   const optionsList =
     shapes != null
       ? shapes.reduce((acc, item) => {
-        if (item.options) {
-          acc.push(...item.options);
-        }
-        return acc;
-      }, [])
+          if (item.options) {
+            acc.push(...item.options);
+          }
+          return acc;
+        }, [])
       : null;
 
   const updateShape = (index, newShape) => {
@@ -212,8 +211,7 @@ const Admin = () => {
   const handleOptionLine = (shapeSelected, type) => {
     if (selectedOptions.length == 0 && type == 'option') {
       setSelectedOptions([shapeSelected]);
-    } else if (selectedOptions.length == 1 && type == "card") {
-
+    } else if (selectedOptions.length == 1 && type == 'card') {
       let lineShape = {
         start: selectedOptions[0].key,
         end: shapeSelected.key,
@@ -251,7 +249,7 @@ const Admin = () => {
     let endY = lineEnd.y;
 
     let coords = [
-      (startX > endX + 300) ? startX - 300 : startX,
+      startX > endX + 300 ? startX - 300 : startX,
       startY + 25,
       endX + 150,
       endY,
@@ -260,7 +258,7 @@ const Admin = () => {
   };
 
   const getOptionByKey = (key) => {
-    let thisOption = null
+    let thisOption = null;
     shapes.map((item) => {
       if (item.key == key) {
         thisOption = item;
@@ -278,25 +276,37 @@ const Admin = () => {
   };
 
   const handleClickEditOption = (option, index) => {
-    setEditingOption(option)
-    setEditPopUpOption(true)
+    setEditingOption(option);
+    setEditPopUpOption(true);
   };
 
   // a method to remove a shape from shapes and remove any lines connected to it
   const handleClickRemoveShape = (shapeKey, index) => {
-    let linesToRemove = [shapeKey.key]
+    let linesToRemove = [shapeKey.key];
     shapeKey.options?.map((option) => {
-      linesToRemove.push(option.key)
-    })
-    console.log(linesToRemove)
-    console.log(lineShapes)
-    console.log(lineShapes.filter((line) => !linesToRemove.includes(line.start) && !linesToRemove.includes(line.end)))
-    setLineShapes(lineShapes.filter((line) => !linesToRemove.includes(line.start) && !linesToRemove.includes(line.end)));
-    shapeKey = shapeKey.key
+      linesToRemove.push(option.key);
+    });
+    console.log(linesToRemove);
+    console.log(lineShapes);
+    console.log(
+      lineShapes.filter(
+        (line) =>
+          !linesToRemove.includes(line.start) &&
+          !linesToRemove.includes(line.end)
+      )
+    );
+    setLineShapes(
+      lineShapes.filter(
+        (line) =>
+          !linesToRemove.includes(line.start) &&
+          !linesToRemove.includes(line.end)
+      )
+    );
+    shapeKey = shapeKey.key;
     setIsRemovingOption(true);
     const newShapes = [...shapes];
     const shapeToRemove = newShapes.find((obj) => obj.key === shapeKey);
-    console.log(shapeToRemove)
+    console.log(shapeToRemove);
     if (shapeToRemove) {
       const updatedShapes = newShapes.filter((obj) => obj.key !== shapeKey);
 
@@ -308,17 +318,19 @@ const Admin = () => {
 
   const handleClickRemoveOption = (optionKey, index) => {
     setIsRemovingOption(true);
-    optionKey = optionKey.key
-    console.log(optionKey)
+    optionKey = optionKey.key;
+    console.log(optionKey);
     const newShapes = [...shapes];
     const optionToRemove = newShapes.find((obj) =>
       obj.options?.find((option) => option.key === optionKey)
     );
-    console.log(optionToRemove)
-    console.log(lineShapes)
+    console.log(optionToRemove);
+    console.log(lineShapes);
     if (optionToRemove) {
-      const updatedOptions = optionToRemove.options.filter((option) => option.key !== optionKey);
-      console.log(updatedOptions)
+      const updatedOptions = optionToRemove.options.filter(
+        (option) => option.key !== optionKey
+      );
+      console.log(updatedOptions);
       const updatedShapes = newShapes.map((obj) => {
         if (obj.key === optionToRemove.key) {
           return { ...obj, options: updatedOptions };
@@ -326,7 +338,11 @@ const Admin = () => {
         return obj;
       });
 
-      setLineShapes(lineShapes.filter((line) => line.start !== optionKey && line.end !== optionKey));
+      setLineShapes(
+        lineShapes.filter(
+          (line) => line.start !== optionKey && line.end !== optionKey
+        )
+      );
       setShapes(updatedShapes);
     }
   };
@@ -343,9 +359,11 @@ const Admin = () => {
         <div className="mid">
           <h4>Codigo para guardar y mostrar al asesor</h4>
           <hr />
-          {
-            (shapes.length > 0) ? <pre>{JSON.stringify(parseShapesToFlow(shapes), null, 1)}</pre> : <p>El arbol esta vacio</p>
-          }
+          {shapes.length > 0 ? (
+            <pre>{JSON.stringify(parseShapesToFlow(shapes), null, 1)}</pre>
+          ) : (
+            <p>El arbol esta vacio</p>
+          )}
         </div>
       </div>
       <div className="mid1">
@@ -374,35 +392,37 @@ const Admin = () => {
           scaleY={scale}
         >
           <Layer>
-
             {shapes != null
               ? shapes.map((shape, i) => (
-                <DynamicRect
-                  key={shape.key}
-                  shape={shape}
-                  index={i}
-                  onUpdate={(newShape) => updateShape(i, newShape)}
-                  editFields={() => handleClickEdit(shape, i)}
-                  addOption={(newShape) => handleClickAddOption(newShape, i)}
-                  isDrawingLine={isDrawingLine}
-                  optionLineAdd={(selectedOption, type) =>
-                    handleOptionLine(selectedOption, type)
-                  }
-                  editOption={(option, index) => handleClickEditOption(option, index)}
-                  removeOption={(option, index) => handleClickRemoveOption(option, index)}
-                  removeCard={(card, index) => handleClickRemoveShape(card, index)}
-                />
-              )) : null}
+                  <DynamicRect
+                    key={shape.key}
+                    shape={shape}
+                    index={i}
+                    onUpdate={(newShape) => updateShape(i, newShape)}
+                    editFields={() => handleClickEdit(shape, i)}
+                    addOption={(newShape) => handleClickAddOption(newShape, i)}
+                    isDrawingLine={isDrawingLine}
+                    optionLineAdd={(selectedOption, type) =>
+                      handleOptionLine(selectedOption, type)
+                    }
+                    editOption={(option, index) =>
+                      handleClickEditOption(option, index)
+                    }
+                    removeOption={(option, index) =>
+                      handleClickRemoveOption(option, index)
+                    }
+                    removeCard={(card, index) =>
+                      handleClickRemoveShape(card, index)
+                    }
+                  />
+                ))
+              : null}
 
             {lineShapes.map((el, i) => {
-              let points = getLineCoordinates(el)
+              let points = getLineCoordinates(el);
               return (
-                <Group key={"lineMarker" + i}>
-                  <Line
-                    key={i}
-                    points={points}
-                    stroke="#000000"
-                  />
+                <Group key={'lineMarker' + i}>
+                  <Line key={i} points={points} stroke="#000000" />
                   <Rect
                     fill="#C0FF00"
                     width={10}
@@ -424,71 +444,56 @@ const Admin = () => {
           <Layer id="grid-layer" />
         </Stage>
       </div>
-      {
-        editPopUp ? (
-          <div className="edit">
-            <h4> Editando</h4>
+      {editPopUp ? (
+        <div className="edit">
+          <h4> Editando</h4>
+          <hr />
+          <div>
+            <label htmlFor="title">Título</label>
+            <br />
+            <input
+              type="text"
+              name="title"
+              id="title"
+              value={editingShape.title}
+              onChange={(event) =>
+                setEditingShape({ ...editingShape, title: event.target.value })
+              }
+            />
             <hr />
-            <div>
-              <label htmlFor="title">Título</label>
-              <br />
-              <input
-                type="text"
-                name="title"
-                id="title"
-                value={editingShape.title}
-                onChange={(event) =>
-                  setEditingShape({ ...editingShape, title: event.target.value })
-                }
-              />
-              <label htmlFor="id">Id</label>
-              <br />
-              <input
-                type="text"
-                name="id"
-                id="id"
-                value={editingShape.id}
-                onChange={(event) =>
-                  setEditingShape({ ...editingShape, id: event.target.value })
-                }
-              />
-              <hr />
-              <button onClick={() => saveShapeInformation()}>Guardar</button>
-            </div>
-            <div className="close" onClick={() => closePopUp()}>
-              X
-            </div>
+            <button onClick={() => saveShapeInformation()}>Guardar</button>
           </div>
-        ) : null
-      }
+          <div className="close" onClick={() => closePopUp()}>
+            X
+          </div>
+        </div>
+      ) : null}
 
       {/* PopUp Edit Option */}
-      {
-        editPopUpOption ? (
-          <div className="edit">
-            <h4> Editando Opcion</h4>
+      {editPopUpOption ? (
+        <div className="edit">
+          <h4> Editando Opcion</h4>
+          <hr />
+          <div>
+            <label htmlFor="name">Título</label>
             <hr />
-            <div>
-              <label htmlFor="name">Título</label>
-              <hr />
-              <input
-                type="text"
-                name="name"
-                id="name"
-                value={editingOption.name}
-                onChange={(event) =>
-                  setEditingOption({ ...editingOption, name: event.target.value })
-                }
-              />
-              <hr />
-              <button onClick={() => saveOptionInformation()}>Guardar</button>
-            </div>
-            <div className="close" onClick={() => closePopUpOption()}>
-              X
-            </div>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              value={editingOption.name}
+              onChange={(event) =>
+                setEditingOption({ ...editingOption, name: event.target.value })
+              }
+            />
+            <hr />
+            <button onClick={() => saveOptionInformation()}>Guardar</button>
           </div>
-        ) : null
-      }
+          <div className="close" onClick={() => closePopUpOption()}>
+            X
+          </div>
+        </div>
+      ) : null}
     </>
   );
 };
