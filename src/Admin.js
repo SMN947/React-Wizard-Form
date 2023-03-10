@@ -250,7 +250,7 @@ const Admin = () => {
 
     let coords = [
       startX > endX + 300 ? startX - 300 : startX,
-      startY + 25,
+      startY + 5,
       endX + 150,
       endY,
     ];
@@ -286,15 +286,6 @@ const Admin = () => {
     shapeKey.options?.map((option) => {
       linesToRemove.push(option.key);
     });
-    console.log(linesToRemove);
-    console.log(lineShapes);
-    console.log(
-      lineShapes.filter(
-        (line) =>
-          !linesToRemove.includes(line.start) &&
-          !linesToRemove.includes(line.end)
-      )
-    );
     setLineShapes(
       lineShapes.filter(
         (line) =>
@@ -306,7 +297,6 @@ const Admin = () => {
     setIsRemovingOption(true);
     const newShapes = [...shapes];
     const shapeToRemove = newShapes.find((obj) => obj.key === shapeKey);
-    console.log(shapeToRemove);
     if (shapeToRemove) {
       const updatedShapes = newShapes.filter((obj) => obj.key !== shapeKey);
 
@@ -319,18 +309,14 @@ const Admin = () => {
   const handleClickRemoveOption = (optionKey, index) => {
     setIsRemovingOption(true);
     optionKey = optionKey.key;
-    console.log(optionKey);
     const newShapes = [...shapes];
     const optionToRemove = newShapes.find((obj) =>
       obj.options?.find((option) => option.key === optionKey)
     );
-    console.log(optionToRemove);
-    console.log(lineShapes);
     if (optionToRemove) {
       const updatedOptions = optionToRemove.options.filter(
         (option) => option.key !== optionKey
       );
-      console.log(updatedOptions);
       const updatedShapes = newShapes.map((obj) => {
         if (obj.key === optionToRemove.key) {
           return { ...obj, options: updatedOptions };
@@ -349,24 +335,7 @@ const Admin = () => {
 
   return (
     <>
-      <div className="mid2">
-        <div className="mid">
-          <h4>Codigo del editor</h4>
-          <hr />
-          <pre>{JSON.stringify(shapes, null, 1)}</pre>
-        </div>
-
-        <div className="mid">
-          <h4>Codigo para guardar y mostrar al asesor</h4>
-          <hr />
-          {shapes.length > 0 ? (
-            <pre>{JSON.stringify(parseShapesToFlow(shapes), null, 1)}</pre>
-          ) : (
-            <p>El arbol esta vacio</p>
-          )}
-        </div>
-      </div>
-      <div className="mid1">
+      <div className="full">
         <button
           onClick={() => {
             addShape();
