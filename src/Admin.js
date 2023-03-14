@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Stage, Layer, Rect, Line, Text, Group } from 'react-konva';
+import { Stage, Layer, Rect, Line, Text, Group, Shape } from 'react-konva';
 import { DynamicRect } from './DynamicRect';
+import Button from '@mui/material/Button';
 
 const Admin = () => {
   const generateRandomId = () => {
@@ -248,13 +249,35 @@ const Admin = () => {
     let endX = lineEnd.x;
     let endY = lineEnd.y;
 
-    let coords = [
-      startX > endX + 300 ? startX - 300 : startX,
-      startY + 5,
-      endX + 150,
-      endY,
-    ];
-    return coords;
+    //Adjustement Position
+    startX = startX > endX + 300 ? startX - 300 : startX;
+
+    const nodeWidth = 300;
+    const nodeHeight = 120;
+
+    const deltaX = endX - startX;
+    const absDeltaX = Math.abs(deltaX);
+    const signX = deltaX > 0 ? 1 : -1;
+
+    const controlPoint1 = {
+      x:
+        startX +
+        ((signX * nodeWidth) / 2) *
+          (absDeltaX > nodeWidth ? 1 : absDeltaX / nodeWidth),
+      y: startY,
+    };
+
+    const controlPoint2 = {
+      x:
+        endX -
+        ((signX * nodeWidth) / 2) *
+          (absDeltaX > nodeWidth ? 1 : absDeltaX / nodeWidth),
+      y: endY - (endY > startY ? nodeHeight / 2 : -nodeHeight / 2), // shift control point vertically based on the relative positions of the nodes
+    };
+    let coords = [startX, startY + 5, endX + 150, endY];
+    let controlPoints = [controlPoint1, controlPoint2];
+    console.log([coords, controlPoints]);
+    return [coords, controlPoints];
   };
 
   const getOptionByKey = (key) => {
@@ -336,20 +359,25 @@ const Admin = () => {
   return (
     <>
       <div className="full">
-        <button
+        <Button
+          variant="contained"
+          color="primary"
           onClick={() => {
             addShape();
           }}
         >
+          {' '}
           Añadir Elemento
-        </button>
-        <button
+        </Button>{' '}
+        <Button
+          variant="contained"
+          color="primary"
           onClick={() => {
             saveTreeToDB();
           }}
         >
           Guardar Arbol
-        </button>
+        </Button>
         <hr />
         <Stage
           ref={stageRef}
@@ -387,8 +415,68 @@ const Admin = () => {
                 ))
               : null}
 
+            {/* {lineShapes.map((el, i) => {
+              const lineCoords = getLineCoordinates(el);
+              let points = lineCoords[0];
+              let controlPoints = lineCoords[1];
+              console.clear();
+              console.log(points);
+              console.log(controlPoints[0]);
+              console.log(controlPoints[1]);
+              return (
+                <Group key={'lineMarker' + i}>
+                  <Shape
+                    sceneFunc={(context, shape) => {
+                      context.beginPath();
+                      context.moveTo(points[0], points[1]);
+                      context.bezierCurveTo(
+                        controlPoints[0].x,
+                        controlPoints[0].y,
+                        controlPoints[1].x,
+                        controlPoints[1].y,
+                        points[2],
+                        points[3]
+                      );
+                      context.strokeShape(shape);
+                    }}
+                    stroke="#000000"
+                  />
+                  <Rect
+                    fill="#C0FF00"
+                    width={10}
+                    height={10}
+                    x={points[0] - 5}
+                    y={points[1] - 5}
+                  />
+                  <Rect
+                    fill="#FF0000"
+                    width={10}
+                    height={10}
+                    x={points[2] - 5}
+                    y={points[3] - 5}
+                  />
+
+                  <Rect
+                    fill="#00c4ff"
+                    width={15}
+                    height={10}
+                    x={controlPoints[0].x}
+                    y={controlPoints[0].y}
+                  />
+
+                  <Rect
+                    fill="#0010ff"
+                    width={10}
+                    height={15}
+                    x={controlPoints[1].x}
+                    y={controlPoints[1].y}
+                  />
+                </Group>
+              );
+            })} */}
+
             {lineShapes.map((el, i) => {
-              let points = getLineCoordinates(el);
+              let points = getLineCoordinates(el)[0];
               return (
                 <Group key={'lineMarker' + i}>
                   <Line key={i} points={points} stroke="#000000" />
