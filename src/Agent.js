@@ -30,9 +30,9 @@ class StepperForm extends Component {
       let JSONData = this.parseShapesToFlow(JSON.parse(storedData));
       this.setState({
         formData: JSONData,
-        // currentStep: Object.keys(JSONData)[0],
-        // selectionHistory: ['Inicio'],
-        // selectionHistoryIds: [Object.keys(JSONData)[0]],
+        currentStep: Object.keys(JSONData)[0],
+        selectionHistory: ['Inicio'],
+        selectionHistoryIds: [Object.keys(JSONData)[0]],
       });
     }
 

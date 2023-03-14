@@ -32,8 +32,8 @@ const App = () => {
         {showAgent ? 'Ver Admin' : 'Ver Agente'}
       </Button>
       <hr />
-      {/* {showAgent ? <Agent /> : <Admin />} */}
-      <Admin />
+      {showAgent ? <Agent /> : <Admin />}
+      {/* <Admin /> */}
       {/* <Agent /> */}
     </StrictMode>
   );
