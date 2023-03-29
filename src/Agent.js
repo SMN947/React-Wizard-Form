@@ -165,8 +165,11 @@ class StepperForm extends Component {
                   ) : this.state.formData[this.state.currentStep].transfer ? (
                     <>
                       <p>
-                        Transferir al skill:{' '}
-                        {this.state.formData[this.state.currentStep].transfer}
+                        Transfiere al siguiente skil, esperamos haberte ayudado
+                        ! 😁 : <br />
+                        <b>
+                          {this.state.formData[this.state.currentStep].transfer}
+                        </b>
                       </p>
                       <button
                         onClick={() => {
